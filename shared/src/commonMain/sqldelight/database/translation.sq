@@ -1,0 +1,34 @@
+CREATE TABLE TranslationHistory(
+    translationId TEXT NOT NULL PRIMARY KEY,
+    translationFromLangCode TEXT NOT NULL,
+    translationFromText TEXT NOT NULL,
+    translationToLangCode TEXT NOT NULL,
+    translationToText TEXT NOT NULL,
+    translationCreatedAt INTEGER NOT NULL
+);
+
+insertTranslation:
+INSERT OR REPLACE INTO TranslationHistory(
+    translationId,
+    translationFromLangCode,
+    translationFromText,
+    translationToLangCode,
+    translationToText,
+    translationCreatedAt
+)
+VALUES (?,?,?,?,?,?);
+
+getAllTranslations:
+SELECT * FROM TranslationHistory
+ORDER BY translationCreatedAt DESC;
+
+getTranslationById:
+SELECT * FROM TranslationHistory
+WHERE translationId = ?;
+
+deleteTranslation:
+DELETE FROM TranslationHistory
+WHERE translationId = ?;
+
+deleteAllTranslations:
+DELETE FROM TranslationHistory;

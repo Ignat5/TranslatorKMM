@@ -87,3 +87,10 @@ android {
         targetSdk = 33
     }
 }
+
+sqldelight {
+    database("TranslationDatabase") {
+        packageName = "com.example.translatorkmm.database"
+        sourceFolders = listOf("sqldelight")
+    }
+}
