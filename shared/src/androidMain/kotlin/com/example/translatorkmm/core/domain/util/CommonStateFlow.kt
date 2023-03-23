@@ -6,4 +6,4 @@ actual class CommonStateFlow<T> actual constructor(
     private val stateFlow: StateFlow<T>
 ) : StateFlow<T> by stateFlow
 
-fun <T> StateFlow<T>.toCommonStateFlow() = CommonStateFlow(this)
+//fun <T> StateFlow<T>.toCommonStateFlow() = CommonStateFlow(this)
