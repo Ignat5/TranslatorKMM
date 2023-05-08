@@ -1,22 +1,33 @@
 package com.example.translatorkmm.android.feature_translation.presentation.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Snackbar
+import androidx.compose.material.SnackbarData
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import com.example.translatorkmm.android.feature_translation.presentation.components.LanguageDropDown
 import com.example.translatorkmm.android.feature_translation.presentation.components.SwapLanguagesButton
+import com.example.translatorkmm.android.feature_translation.presentation.components.TranslationTextField
 import com.example.translatorkmm.feature_translation.presentation.TranslationScreenEvent
 import com.example.translatorkmm.feature_translation.presentation.TranslationScreenState
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TranslationScreen(
     state: TranslationScreenState,
     onEvent: (event: TranslationScreenEvent) -> Unit
 ) {
+    val context = LocalContext.current
     Scaffold(
         floatingActionButton = {
 
@@ -50,9 +61,10 @@ fun TranslationScreen(
                         },
                         modifier = Modifier.weight(2f, true)
                     )
-                    SwapLanguagesButton(onClick = {
-                        onEvent(TranslationScreenEvent.OnSwapLanguagesClick)
-                    },
+                    SwapLanguagesButton(
+                        onClick = {
+                            onEvent(TranslationScreenEvent.OnSwapLanguagesClick)
+                        },
                         modifier = Modifier.weight(1f, true)
                     )
                     LanguageDropDown(
@@ -70,6 +82,40 @@ fun TranslationScreen(
                         modifier = Modifier.weight(2f, true)
                     )
                 }
+            }
+            item {
+                val clipboardManager = LocalClipboardManager.current
+                val keyboardController = LocalSoftwareKeyboardController.current
+                TranslationTextField(
+                    fromText = state.fromText,
+                    toText = state.toText,
+                    isTranslating = state.isTranslating,
+                    fromLanguage = state.fromLanguage,
+                    toLanguage = state.toLanguage,
+                    onTranslateClick = {
+                        keyboardController?.hide()
+                        onEvent(TranslationScreenEvent.OnTranslateClick)
+                    },
+                    onTextChange = {
+                        onEvent(TranslationScreenEvent.OnTranslateFromTextChange(it))
+                    },
+                    onCopyClick = {
+                        clipboardManager.setText(
+                            buildAnnotatedString {
+                                append(it)
+                            }
+                        )
+                        Toast.makeText(context, "text copied", Toast.LENGTH_SHORT).show()
+                    },
+                    onCloseClick = {
+                        onEvent(TranslationScreenEvent.OnCloseTranslationClick)
+                    },
+                    onSpeakerClick = { /*TODO*/ },
+                    onTextFieldClick = {
+                        onEvent(TranslationScreenEvent.OnEditTranslationClick)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
     }
