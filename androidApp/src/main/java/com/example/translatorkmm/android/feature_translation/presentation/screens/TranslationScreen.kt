@@ -1,5 +1,6 @@
 package com.example.translatorkmm.android.feature_translation.presentation.screens
 
+import android.speech.tts.TextToSpeech
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,8 +19,10 @@ import androidx.compose.ui.unit.dp
 import com.example.translatorkmm.android.feature_translation.presentation.components.LanguageDropDown
 import com.example.translatorkmm.android.feature_translation.presentation.components.SwapLanguagesButton
 import com.example.translatorkmm.android.feature_translation.presentation.components.TranslationTextField
+import com.example.translatorkmm.android.feature_translation.presentation.components.rememberTextToSpeech
 import com.example.translatorkmm.feature_translation.presentation.TranslationScreenEvent
 import com.example.translatorkmm.feature_translation.presentation.TranslationScreenState
+import java.util.*
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -86,6 +89,7 @@ fun TranslationScreen(
             item {
                 val clipboardManager = LocalClipboardManager.current
                 val keyboardController = LocalSoftwareKeyboardController.current
+                val tts = rememberTextToSpeech()
                 TranslationTextField(
                     fromText = state.fromText,
                     toText = state.toText,
@@ -110,7 +114,15 @@ fun TranslationScreen(
                     onCloseClick = {
                         onEvent(TranslationScreenEvent.OnCloseTranslationClick)
                     },
-                    onSpeakerClick = { /*TODO*/ },
+                    onSpeakerClick = {
+                        tts.language = state.toLanguage.toLocale() ?: Locale.ENGLISH
+                        tts.speak(
+                            state.toText,
+                            TextToSpeech.QUEUE_FLUSH,
+                            null,
+                            null
+                        )
+                    },
                     onTextFieldClick = {
                         onEvent(TranslationScreenEvent.OnEditTranslationClick)
                     },
