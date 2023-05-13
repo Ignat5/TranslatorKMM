@@ -57,6 +57,18 @@ class TranslationViewModel(
             is TranslationScreenEvent.OnTranslationHistoryItemClick -> onTranslationHistoryItemClick(
                 event
             )
+            is TranslationScreenEvent.OnEditTranslationClick -> onEditTranslationClick()
+        }
+    }
+
+    private fun onEditTranslationClick() {
+        if (screenState.value.toText != null) {
+            _screenState.update {
+                it.copy(
+                    toText = null,
+                    isTranslating = false
+                )
+            }
         }
     }
 
@@ -130,12 +142,13 @@ class TranslationViewModel(
     }
 
     private fun onFromLanguageChosen(event: TranslationScreenEvent.OnFromLanguageChosen) {
-        _screenState.update {
+        val updatedState = _screenState.updateAndGet {
             it.copy(
                 fromLanguage = event.language,
                 isChoosingFromLanguage = false
             )
         }
+        onTranslateClick(updatedState)
     }
 
     private fun onToLanguageChosen(event: TranslationScreenEvent.OnToLanguageChosen) {
