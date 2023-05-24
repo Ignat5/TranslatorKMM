@@ -30,6 +30,8 @@ struct LanguageDropDown: View {
                 SmallLanguageIcon(language: language)
                 Text(language.language.langName)
                     .foregroundColor(Color.lightBlue)
+                    .lineLimit(1)
+                    .truncationMode(Text.TruncationMode.tail)
                 Image(systemName: isMenuOpen ? "chevron.up" : "chevron.down")
                     .foregroundColor(.lightBlue)
             }
