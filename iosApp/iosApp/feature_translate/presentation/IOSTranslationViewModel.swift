@@ -8,6 +8,7 @@
 
 import Foundation
 import shared
+import OSLog
 
 extension TranslationScreen {
     @MainActor class IOSTranslationViewModel: ObservableObject {
@@ -16,8 +17,13 @@ extension TranslationScreen {
         private let viewModel: TranslationViewModel
         
         @Published var state: TranslationScreenState = TranslationScreenState(
-            fromText: "", toText: nil, fromLanguage: UILanguage(language: Language.english, imageName: "english"), toLanguage: UILanguage(language: Language.german, imageName: "german"), isTranslating: false, isChoosingFromLanguage: false, isChoosingToLanguage: false, error: nil, historyList: [])
-        
+            fromText: "", toText: nil,
+            fromLanguage: UILanguage(language: Language.english, imageName: "english"),
+            toLanguage: UILanguage(language: Language.german, imageName: "german"),
+            isTranslating: false,
+            isChoosingFromLanguage: false,
+            isChoosingToLanguage: false, error: nil,
+            historyList: [])
         init(readHistoryUseCase: ReadHistoryUseCase, translateUseCase: TranslateUseCase) {
             self.readHistoryUseCase = readHistoryUseCase
             self.translateUseCase = translateUseCase
@@ -25,6 +31,8 @@ extension TranslationScreen {
         }
         
         func onEvent(event: TranslationScreenEvent) {
+            let defaultLog = Logger()
+            defaultLog.log("IOSTranslationViewModel: OnEvent: event: \(event), state: \(self.state)")
             self.viewModel.onEvent(event: event)
         }
         
